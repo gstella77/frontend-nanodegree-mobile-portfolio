@@ -416,29 +416,34 @@ var resizePizzas = function(size) {
   }
   changeSliderLabel(size);
 
-
-function changePizzaSizes(size) {
-  var newWidth;
+  //optimized code from Cameron's Stop FSL video when resizing pizzas.
+  function changePizzaSizes(size) {
+    var newWidth;
       switch(size) {
-      case "1":
-        newWidth = 25;
-        break;
-      case "2":
-        newWidth = 33.3;
-        break;
-      case "3":
-        newWidth = 50;
-        break;
-      default:
+        case "1":
+          newWidth = 25;
+          break;
+        case "2":
+          newWidth = 33.3;
+          break;
+        case "3":
+          newWidth = 50;
+          break;
+        default:
         console.log("bug in changePizzaSizes");
-    }
+      }
 
+  //changed querySelectorAll for getElementsByClassName to avoid query
+  //all DOM elements inside the loop since it loads once
   var randomPizzas = document.getElementsByClassName("randomPizzaContainer");
 
-  for (var i = 0, pizzasLength = randomPizzas.length; i < pizzasLength; i++) {
-    randomPizzas[i].style.width = newWidth + "%";
+  //per forum's suggestion initialized array length inside var
+  //so lenght property value is not checked on each loop's iteration
+  //var pizzasLength = randomPizzas.length;
+    for (var i = 0, pizzasLength = randomPizzas.length; i < pizzasLength; i++) {
+      randomPizzas[i].style.width = newWidth + "%";
+    }
   }
-}
 
   changePizzaSizes(size);
 
@@ -451,6 +456,8 @@ function changePizzaSizes(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
+// pizzasDiv moved outside loop since it is needed once
+// when the DOM loads to avoid checking the value on each loop's iteration
 var pizzasDiv = document.getElementById("randomPizzas");
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
@@ -464,7 +471,6 @@ window.performance.measure("measure_pizza_generation", "mark_start_generating", 
 var timeToGenerate = window.performance.getEntriesByName("measure_pizza_generation");
 console.log("Time to generate pizzas on load: " + timeToGenerate[0].duration + "ms");
 
-
 var frame = 0;
 
 function logAverageFrame(times) {   // times is the array of User Timing measurements from updatePositions()
@@ -476,18 +482,32 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average scripting time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
-//updated rAF script from angela_3086348902786 and Andrew's post forum and from
+// updated rAF script from angela_3086348902786 and Andrew's post forum and from
 // Paul Lewis https://www.html5rocks.com/en/tutorials/speed/animations/
+
+// Refactored from original cameron's file the addEventListener() scroll event
+// debouncing scroll events from updatePositions to to minimize extra calculations
+// optimize scroll animation with the use of rAF
+// when pizzas window is scrolled
 window.addEventListener('scroll', onScroll);
 
+// set intial scroll position to 0px
 var latestKnownScrollTop = 0;
+
+// var ticking set to false to avoid constantly running rAF and requested only when
+// one or more scroll events have taken place.
 var ticking = false;
 
 function onScroll() {
+  // Remove document.body.scrollTop from updatePositions to avoid forced reflow
+  // track latestKnownScrollTop var to the current number of pixels scrolled vertically
+  // divide by 1250px to provide smooth offsetting of horizontal animation
   latestKnownScrollTop = document.body.scrollTop / 1250;
   requestUpdate();
 }
 
+// Create requestUpdate() function and check if ticking is not true
+// if not true, initiate rAF call and execute updatePositions
 function requestUpdate() {
   if(!ticking) {
     //console.log('updating ' + ticking);     // Console Log 1
@@ -498,23 +518,33 @@ function requestUpdate() {
   }
 }
 
+// moved items outside updatePositions function since it doesn'tt change after DOM loads
+// replaced querySelectorAll for getElementsByClassName to avoid scan all DOM elements
 var items = document.getElementsByClassName('mover');
 
+// Moves the sliding background pizzas based on scroll position
 function updatePositions() {
   console.log('inside updatePositions updating = ' + ticking);  // Console Log 2
   frame++;
   window.performance.mark("mark_start_frame");
 
-
-  //scrollTop removed from lthe loop so it doesn't trigger layout on each loop's iteration
-  //creating a variable to hold the value of document.body.scrollTop calculation and to avoid unncessary cals inside the loop
+  // scrollTop property moved outside the loop so it doesn't trigger FSL on each loop's iteration
+  // create scrollPizzas var to hold the value of scrollTop position calculation
   var scrollPizzas =  latestKnownScrollTop;
 
+  // Per forum's recommendation placed phases var into array and outside loop to eliminate
+  // extra calculations inside loop
   var phases = [];
+
+  // placed phases in a separate loop to minimize calculations per loop
+  // calculate five random phases to offset animation horizontally on latest scroll position
   for(var i = 0; i < 5; i++) {
     phases.push(((Math.sin(scrollPizzas + i % 100)) * 100) + 800);
   }
 
+  // per forum's recommendation create var for array lengt inside initialization loop
+  // to increase frame rate performance
+  // used translateX to avoid triggering layout
   for (var i = 0, pizzaItems = items.length; i < pizzaItems; i++) {
     items[i].style.transform = 'translateX(' + (phases[i % 5] - items[i].basicLeft) + 'px)';
   }
@@ -525,8 +555,12 @@ function updatePositions() {
     var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
     logAverageFrame(timesToUpdatePosition);
   }
+
+  // set ticking to false and to be ready for next scroll rAF and updatePositions call
   ticking = false;
 }
+
+// scroll event and updatePositions call is now handled by onScroll function
 
 //window.addEventListener('scroll',updatePositions);
 /*window.addEventListener('scroll', function() {
@@ -537,14 +571,17 @@ function updatePositions() {
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
+
+  // created elem array var to handle sliding pizza creations
+  // inside its own function
   var elem = [];
 
+  // this line replaces document.querySelector("#movingPizzas1")
+  // to avoid unneccesary queries inside DOM
   var slidingPizzas = document.getElementById('movingPizzas1')
 
-  //Used Cameron's concept pizzaGenerator
-  //created function for moving pizzas image object and do
-  //layout calculations. Noticed subtle difference
-  //in average time decrease with original file
+  // Used Cameron's concept pizzaGenerator
+  // created function for moving pizzas image object and do sliding pizza layout calculations.
   var movingPizzaGenerator = function(i) {
     elem = document.createElement('img');
     elem.classList.add("mover");
@@ -553,15 +590,15 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.basicLeft = (i % cols) * s;
     return elem;
   }
-
-  // Generate background pizzas and call
-  // image value on movingPizzaGenerator var
+  // Generate 32 background pizzas and call movingPizzaGenerator function
+  // querySelector moved outside so we use only appendChild to improve loop's effciency
   for (var i = 0; i < 32; i++) {
     slidingPizzas.appendChild(movingPizzaGenerator(i));
   }
 
-   //updatePositions();
-   window.requestAnimationFrame(updatePositions);
+  // added rAF since DOMContentLoaded generates visual changes to the screen
+  // updatePositions();
+  window.requestAnimationFrame(updatePositions);
 });
 
 //goal average time is 0.16

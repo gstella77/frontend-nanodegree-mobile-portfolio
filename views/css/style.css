@@ -37,22 +37,21 @@ form {
   transform: translateZ(0);
   position: fixed;
   max-width: 80px;
+
   height: auto;
   z-index: -1;
 }
 
-/*uncommented will-change and transform - causing long
-unnnecessary composite layers */
+.mover-padding {
+  margin: 150px;
+}
+
 .randomPizzaContainer {
-  /*will-change: transform;
-  transform: translateZ(0);*/
   float: left;
   display: flex;
 }
 
 .randomPizzaContainer:after {
-  /*will-change: transform;
-  transform: translateZ(0);*/
   content: "";
   display: table;
   clear:both;

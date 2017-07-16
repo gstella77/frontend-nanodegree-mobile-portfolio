@@ -6,6 +6,8 @@
     <meta name="description" content=" FILL ME IN ">
     <meta name="author" content=" FILL ME IN ">
     <title>Cameron Pittman: Portfolio</title>
+    <!--Inlined the CSS for simplicity and avoid block rendering
+    to improve Critical Rendering Path-->
     <style type="text/css">
       html{font-size:100%;overflow-y:scroll;-webkit-tap-highlight-color:rgba(0,0,0,0);-ms-text-size-adjust:100%-webkit-text-size-adjust:none;}
       body{margin:0;font-size:14px;line-height:1.61;font-weight:400;}
@@ -35,6 +37,7 @@
       header p{padding-left:4.5em;}
       }
     </style>
+    <!--Added media="print" query attribute to avoid block rendering since print.css it is only needed for printing-->
     <link href="css/print.css" rel="stylesheet" media="print">
   </head>
   <body>
@@ -76,6 +79,7 @@
         <p>&copy; Web Performance 2014 <span id="crp-stats"></span></p>
       </footer>
     </div>
+    <!-- Moved js files at the bottom and used 'async' to avoid parser blocking so js resources execute after DOM elements are loaded-->
     <script>
     (function(w,g){w['GoogleAnalyticsObject']=g;
     w[g]=w[g]||function(){(w[g].q=w[g].q||[]).push(arguments)};w[g].l=1*new Date();})(window,'ga');
