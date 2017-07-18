@@ -456,8 +456,8 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
-// pizzasDiv moved outside loop since it is needed once
-// when the DOM loads to avoid checking the value on each loop's iteration
+// document.getElementById moved outside loop since it is needed once
+// when the DOM loads to avoid query the class on each loop's iteration
 var pizzasDiv = document.getElementById("randomPizzas");
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
@@ -486,9 +486,8 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // Paul Lewis https://www.html5rocks.com/en/tutorials/speed/animations/
 
 // Refactored from original cameron's file the addEventListener() scroll event
-// debouncing scroll events from updatePositions to to minimize extra calculations
+// debouncing scroll events from updatePositions to minimize extra calculations
 // optimize scroll animation with the use of rAF
-// when pizzas window is scrolled
 window.addEventListener('scroll', onScroll);
 
 // set intial scroll position to 0px
@@ -510,11 +509,8 @@ function onScroll() {
 // if not true, initiate rAF call and execute updatePositions
 function requestUpdate() {
   if(!ticking) {
-    //console.log('updating ' + ticking);     // Console Log 1
     updating = true;
     requestAnimationFrame(updatePositions);
-  } else {
-    //console.log('aborted scroll');     // Console Log 1
   }
 }
 
@@ -524,7 +520,6 @@ var items = document.getElementsByClassName('mover');
 
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
-  console.log('inside updatePositions updating = ' + ticking);  // Console Log 2
   frame++;
   window.performance.mark("mark_start_frame");
 
@@ -561,27 +556,23 @@ function updatePositions() {
 }
 
 // scroll event and updatePositions call is now handled by onScroll function
-
 //window.addEventListener('scroll',updatePositions);
-/*window.addEventListener('scroll', function() {
-  requestAnimationFrame(updatePositions);
-});*/
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
 
-  // created elem array var to handle sliding pizza creations
-  // inside its own function
+  // created elem array var to hold sliding pizzas
   var elem = [];
 
   // this line replaces document.querySelector("#movingPizzas1")
   // to avoid unneccesary queries inside DOM
   var slidingPizzas = document.getElementById('movingPizzas1')
 
-  // Used Cameron's concept pizzaGenerator
-  // created function for moving pizzas image object and do sliding pizza layout calculations.
+  // Used Cameron's pizzaGenerator concept
+  // created function for moving pizzas image object and
+  // perform sliding pizza position calculations.
   var movingPizzaGenerator = function(i) {
     elem = document.createElement('img');
     elem.classList.add("mover");
