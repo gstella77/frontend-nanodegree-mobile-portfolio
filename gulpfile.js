@@ -3,8 +3,11 @@
 // // /////////////////////////////////////////////
 
 var gulp = require('gulp'),
+    htmlreplace = require('gulp-html-replace'),
+    useref = require('gulp-useref'),
     uglify = require('gulp-uglify'),
     minifyCSS = require('gulp-clean-css'),
+    gulpIf = require('gulp-if'),
     rename = require('gulp-rename'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload,
@@ -20,49 +23,31 @@ gulp.task('browser-Sync', function() {
 })
 
 // ////////////////////////////////////////////////
-// Scripts
-// Styles
-// HTML
-// use globes to minify and match the files onto the target folder
+// useref is AWESOME - simplify and saves lines of code!!
+// useref: Added Build tags in HTML files to update js and css file name with .min,
+// then uglify, minifycss, and copy the html content into my Dist folder
+// Used globes to minify and match the files onto the target folder
 // // /////////////////////////////////////////////
 
-gulp.task('scripts', function(){
-    gulp.src(['src/js/**/*.js', '!src/js/**/*.min.js'])
-    .pipe(rename({suffix:'.min'}))
-    .pipe(uglify())
-    .pipe(gulp.dest('dist/js'));
+gulp.task('useref', function() {
+    gulp.src('src/*.html')
+    .pipe(useref())
+    .pipe(gulpIf('*.js', uglify()))
+    .pipe(gulpIf('*.css', minifyCSS()))
+    .pipe(gulp.dest('dist'));
 
-    gulp.src(['src/views/js/**/*.js', '!src/views/js/**/*.min.js'])
-    .pipe(rename({suffix:'.min'}))
-    .pipe(uglify())
-    .pipe(gulp.dest('dist/views/js'))
-
-    .pipe(reload({stream:true}));
-})
-
-gulp.task('styles', function(){
-     gulp.src(['src/css/**/*.css', '!src/css/**/*.min.css'])
-    .pipe(rename({suffix:'.min'}))
-    .pipe(minifyCSS())
-    .pipe(gulp.dest('dist/css'))
-
-    gulp.src(['src/views/css/**/*.css', '!src/views/css/**/*.min.css'])
-    .pipe(rename({suffix:'.min'}))
-    .pipe(minifyCSS())
-    .pipe(gulp.dest('dist/views/css'))
-
-    .pipe(browserSync.reload({stream: true}));
-})
-
-gulp.task('html', function(){
-    gulp.src(['src/**/*.html'])
-    .pipe(gulp.dest('dist/'))
-
-    gulp.src(['src/views/**/*.html'])
+     gulp.src('src/views/*.html')
+    .pipe(useref())
+    .pipe(gulpIf('*.js', uglify()))
+    .pipe(gulpIf('*.css', minifyCSS()))
     .pipe(gulp.dest('dist/views/'))
 
-    .pipe(browserSync.reload({stream: true}));
+    .pipe(reload({stream:true}));
 });
+
+
+// copy the html content into our Dist folder
+
 
 gulp.task('images', function(){
     gulp.src(['src/img/**/*.+(png|jpg|gif|svg)'])
@@ -87,12 +72,12 @@ gulp.task('images', function(){
 // // /////////////////////////////////////////////
 
 gulp.task('watch', function(){
-    gulp.watch('src/**/*.js', ['scripts']);
-    gulp.watch('src/js/**/*.js', ['scripts']);
-    gulp.watch('src/views/css/**/*.css', ['styles']);
-    gulp.watch('src/css/**/*.css', ['styles']);
-    gulp.watch('src/views/**/*.html', ['html']);
-    gulp.watch('src/**/*.html', ['html']);
+    gulp.watch('src/**/*.js', ['useref']);
+    gulp.watch('src/js/**/*.js', ['useref']);
+    gulp.watch('src/views/css/**/*.css', ['useref']);
+    gulp.watch('src/css/**/*.css', ['useref']);
+    gulp.watch('src/views/**/*.html', ['useref']);
+    gulp.watch('src/**/*.html', ['useref']);
     gulp.watch('src/img/**/*', ['images']);
     gulp.watch('src/views/images/**/*', ['images']);
 });
@@ -101,4 +86,4 @@ gulp.task('watch', function(){
 // Deafult Task
 // // /////////////////////////////////////////////
 
-gulp.task('default', ['scripts', 'styles', 'html', 'images', 'browser-Sync','watch',]);
+gulp.task('default', ['useref', 'images', 'browser-Sync','watch',]);

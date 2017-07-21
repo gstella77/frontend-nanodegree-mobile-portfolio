@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content=" FILL ME IN ">
@@ -38,7 +38,9 @@
       }
     </style>
     <!--Added media="print" query attribute to avoid block rendering since print.css it is only needed for printing-->
+     <!--build:css css/print.min.css -->
     <link href="css/print.css" rel="stylesheet" media="print">
+    <!-- endbuild -->
   </head>
   <body>
     <header>
@@ -87,7 +89,11 @@
     ga('send', 'pageview');
     </script>
     <script async src="http://www.google-analytics.com/analytics.js"></script>
-    <script async src="js/perfmatters.min.js"></script>
+
+    <!--build:js js/perfmatters.min.js -->
+    <script async src="js/perfmatters.js"></script>
+     <!-- endbuild -->
+
     <!--<link href="//fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">-->
   </body>
 </html>
