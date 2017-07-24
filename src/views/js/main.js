@@ -509,7 +509,7 @@ function onScroll() {
 // if not true, initiate rAF call and execute updatePositions
 function requestUpdate() {
   if(!ticking) {
-    updating = true;
+    ticking = true;
     requestAnimationFrame(updatePositions);
   }
 }
@@ -523,12 +523,11 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  // scrollTop property moved outside the loop so it doesn't trigger FSL on each loop's iteration
   // create scrollPizzas var to hold the value of scrollTop position calculation
   var scrollPizzas =  latestKnownScrollTop;
 
-  // Per forum's recommendation placed phases var into array and outside loop to eliminate
-  // extra calculations inside loop
+  // Per forum's recommendation placed phases var into array and outside loop
+  // to eliminate extra calculations inside loop
   var phases = [];
 
   // placed phases in a separate loop to minimize calculations per loop
@@ -537,8 +536,8 @@ function updatePositions() {
     phases.push(((Math.sin(scrollPizzas + i % 100)) * 100) + 800);
   }
 
-  // per forum's recommendation create var for array lengt inside initialization loop
-  // to increase frame rate performance
+  // per forum's recommendation create var for array lengt inside
+  // initialization loop to increase frame rate performance
   // used translateX to avoid triggering layout
   for (var i = 0, pizzaItems = items.length; i < pizzaItems; i++) {
     items[i].style.transform = 'translateX(' + (phases[i % 5] - items[i].basicLeft) + 'px)';
@@ -551,7 +550,7 @@ function updatePositions() {
     logAverageFrame(timesToUpdatePosition);
   }
 
-  // set ticking to false and to be ready for next scroll rAF and updatePositions call
+  // set ticking to false so it is ready for next scroll rAF and updatePositions call
   ticking = false;
 }
 
@@ -568,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // this line replaces document.querySelector("#movingPizzas1")
   // to avoid unneccesary queries inside DOM
-  var slidingPizzas = document.getElementById('movingPizzas1')
+  var slidingPizzas = document.getElementById('movingPizzas1');
 
   // Used Cameron's pizzaGenerator concept
   // created function for moving pizzas image object and
@@ -580,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     elem.basicLeft = (i % cols) * s;
     return elem;
-  }
+  };
   // Generate 32 background pizzas and call movingPizzaGenerator function
   // querySelector moved outside so we use only appendChild to improve loop's effciency
   for (var i = 0; i < 32; i++) {

@@ -1,40 +1,41 @@
-## Website Performance Optimization portfolio project
+## Website Performance Optimization Portfolio Project
 
-Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
+This repository contains a _src_ directory with source files and a _dist_ folder with production files. Gulp was used to automate the following tasks:
 
-To get started, check out the repository and inspect the code.
+* Minify js, css, and HTML files using the _uglify_, _minifyCSS_, and _htmlmin_ plugins
+* Update js and css links with the extension .min using the _useref_ plugin
+* Optimize images using the _imagemin_ plugin
+* Run a live server using the _browser-sync_ plugin
+* Clean the "dist" folder using the _del_ plugin
+* Build a sequence of tasks that clean the **dist** folder, minifies files, optimize images, and creates a new dist folder back using the _runSequence_ plugin.
 
-### Getting started
+Use the following steps to run the Mobile Portfolio web site:
+1. Clone or download the folder by copying the link on the top right corner (green button) and paste it in your terminal using Git. Instructions about how to use Git and how to clone a repository are found [here](https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/).
+2. Navigate to the folder location using ```$ cd /path/to/your-project-folder```
+3. Type ```$ gulp```to preview the production and optimized website on your browser
 
-#### Part 1: Optimize PageSpeed Insights score for index.html
+If you would like to make changes to the source files, type ```$ gulp build``` to minify, optimize and create a new "dist" folder with the updated files.
 
-Some useful tips to help you get started:
+### Website Optimizations
 
-1. Check out the repository
-1. To inspect the site on your phone, you can run a local server
+#### Part 1: index.html Optimizations
 
-  ```bash
-  $> cd /path/to/your-project-folder
-  $> python -m SimpleHTTPServer 8080
-  ```
+* Inlined CSS and used media="print" query attribute to avoid block rendering
+* Moved javaScript files at the bottom of the page and added the 'async' attribute to avoid render-blocking from js resources and execute after over-the-fold DOM elements are loaded.
+* Minified the HTML file into the production folder to improve speed load
 
-1. Open a browser and visit localhost:8080
-1. Download and install [ngrok](https://ngrok.com/) to the top-level of your project directory to make your local server accessible remotely.
+#### Part 2: Frames per Second optimizations for pizza.html
 
-  ``` bash
-  $> cd /path/to/your-project-folder
-  $> ./ngrok http 8080
-  ```
-
-1. Copy the public URL ngrok gives you and try running it through PageSpeed Insights! Optional: [More on integrating ngrok, Grunt and PageSpeed.](http://www.jamescryer.com/2014/06/12/grunt-pagespeed-and-ngrok-locally-testing/)
-
-Profile, optimize, measure... and then lather, rinse, and repeat. Good luck!
-
-#### Part 2: Optimize Frames per Second in pizza.html
-
-To optimize views/pizza.html, you will need to modify views/js/main.js until your frames per second rate is 60 fps or higher. You will find instructive comments in main.js. 
-
-You might find the FPS Counter/HUD Display useful in Chrome developer tools described here: [Chrome Dev Tools tips-and-tricks](https://developer.chrome.com/devtools/docs/tips-and-tricks).
+The following modifications were done to the main.js file:
+* Used "will-change: transform" to promote the "movers" class into its own layer to reduce paint time.
+* Used **translateX** transform property to prevent triggering layout.
+* Improved the **changePizzaSizes** function by eliminating the determineDx variable and repeated code. Simplified the for loop to eliminate FSL (according to cameron's video instructions).
+* Changed all **querySelectorAll** attributes for **getElementsByClassName** to avoid unnecessary queries to all DOM elements
+* Cached values by setting _array.length_ with a new var inside the loop's initialization to prevent the lenght value from being checked on each loop's iteration.
+* Moved some methods such as **document.getElementById** out of functions and loops to avoid multiple queries on each loop's iteration since they are needed to run only once when the DOM loads.
+* Moved calculations outside the for loop in the **updatePositions** function.
+* Used **requestAninationFrame** to optimize animation inside scroll events
+* Moved all calculations outside the for loop in the **document.addEventListener** function and created a function that generates the sliding pizza object.
 
 ### Optimization Tips and Tricks
 * [Optimizing Performance](https://developers.google.com/web/fundamentals/performance/ "web performance")

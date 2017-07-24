@@ -38,14 +38,14 @@
       }
     </style>
     <!--Added media="print" query attribute to avoid block rendering since print.css it is only needed for printing-->
-     <!--build:css css/print.min.css -->
+     <!--build:css css/print.min.css media="print" -->
     <link href="css/print.css" rel="stylesheet" media="print">
     <!-- endbuild -->
   </head>
   <body>
     <header>
       <a href="/"><img src="img/profilepic.jpg"></a>
-      <p>Cameron Pittman<br><span>Course DeveloperTEST</span></p>
+      <p>Cameron Pittman<br><span>Course Developer</span></p>
     </header>
     <div class="container">
       <div class="hero">
@@ -90,7 +90,10 @@
     </script>
     <script async src="http://www.google-analytics.com/analytics.js"></script>
 
-    <!--build:js js/perfmatters.min.js -->
+    <!-- Adding build tags for 'gulp-useref' plugin to update link
+    extension with min. -->
+
+    <!--build:js js/perfmatters.min.js async-->
     <script async src="js/perfmatters.js"></script>
      <!-- endbuild -->
 
