@@ -539,8 +539,8 @@ function updatePositions() {
   // per forum's recommendation create var for array lengt inside
   // initialization loop to increase frame rate performance
   // used translateX to avoid triggering layout
-  for (var i = 0, pizzaItems = items.length; i < pizzaItems; i++) {
-    items[i].style.transform = 'translateX(' + (phases[i % 5] - items[i].basicLeft) + 'px)';
+  for (var j = 0, pizzaItems = items.length; j < pizzaItems; j++) {
+    items[j].style.transform = 'translateX(' + (phases[j % 5] - items[j].basicLeft) + 'px)';
   }
 
   window.performance.mark("mark_end_frame");
