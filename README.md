@@ -12,9 +12,11 @@ This repository contains a _src_ directory with source files and a _dist_ folder
 Use the following steps to run the Mobile Portfolio web site:
 1. Clone or download the folder by copying the link on the top right corner (green button) and paste it in your terminal using Git. Instructions about how to use Git and how to clone a repository are found [here](https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/).
 2. Navigate to the folder location using ```$ cd /path/to/your-project-folder```
-3. Type ```$ gulp```to preview the production and optimized website on your browser
+4. Run ```$ npm install --global gulp-cli``` this will install _gulp_ globally
+5. Run ```$ npm install```
+3. Type ```$ gulp``` to run the production and optimized website in your browser
 
-If you would like to make changes to the source files, type ```$ gulp build``` to minify, optimize and create a new "dist" folder with the updated files.
+If you would like to make changes to the source files, type ```$ gulp build``` to minify, optimize, and create a new "dist" folder with the updated files.
 
 ### Website Optimizations
 
@@ -31,7 +33,7 @@ The following modifications were done to the main.js file:
 * Used **translateX** transform property to prevent triggering layout.
 * Improved the **changePizzaSizes** function by eliminating the determineDx variable and repeated code. Simplified the for loop to eliminate FSL (according to cameron's video instructions).
 * Changed all **querySelectorAll** attributes for **getElementsByClassName** to avoid unnecessary queries to all DOM elements
-* Cached values by setting _array.length_ with a new var inside the loop's initialization to prevent the lenght value from being checked on each loop's iteration.
+* Cached values by setting _array.length_ with a new var inside the loop's initialization to prevent the length value from being checked on each loop's iteration.
 * Moved some methods such as **document.getElementById** out of functions and loops to avoid multiple queries on each loop's iteration since they are needed to run only once when the DOM loads.
 * Moved calculations outside the for loop in the **updatePositions** function.
 * Used **requestAninationFrame** to optimize animation inside scroll events
